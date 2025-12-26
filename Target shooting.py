@@ -4,6 +4,49 @@ from pyglet.graphics import Batch
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Target shooting"
+ANIMATION_SPEED = 0.1
+
+
+class Target(arcade.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.textures = []
+        for i in range(1, 6):
+            texture = arcade.load_texture(f"images/target{i}.png")
+            self.textures.append(texture)
+        self.textures_flipped = [texture.flip_horizontally() for texture in self.textures]
+
+        self.texture = self.textures[0]
+        self.center_x = x
+        self.center_y = y
+        self.scale = 0.3
+
+        self.animation_frame = 0
+        self.animation_timer = 0
+        self.direction = 1  # кароче 1 — вправо / -1 — влево
+
+    def update(self, delta_time, end):
+        if end:
+            self.texture = self.textures[4]
+            return
+
+        if self.change_x > 0:
+            self.direction = 1
+        else:
+            self.direction = -1
+
+        index = self.animation_frame % 4
+
+        if self.direction == 1:
+            self.texture = self.textures[index]
+        else:
+            self.texture = self.textures_flipped[index]
+
+        self.animation_timer += delta_time
+        if self.animation_timer > ANIMATION_SPEED:
+            self.animation_timer = 0
+            self.animation_frame += 1
+        self.center_x += self.change_x
 
 
 class MyGame(arcade.Window):
@@ -29,9 +72,7 @@ class MyGame(arcade.Window):
         self.arrow_list = arcade.SpriteList()
         self.arrow_list.append(self.arrow)
 
-        self.target = arcade.Sprite('images/coin.png', 0.4)
-        self.target.center_x = SCREEN_WIDTH // 2
-        self.target.center_y = SCREEN_HEIGHT - 80
+        self.target = Target(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 80)
         self.target.change_x = 3
         self.target_list = arcade.SpriteList()
         self.target_list.append(self.target)
@@ -56,12 +97,14 @@ class MyGame(arcade.Window):
         if self.score == 3:
             self.target.center_x = SCREEN_WIDTH // 2
             self.target.change_x = 0
-            self.target.update()
+            self.target.update(delta_time, True)
             self.end = True
             return
 
         if arcade.check_for_collision(self.arrow, self.target):
             self.score += 1
+            self.target.center_x = SCREEN_WIDTH // 2
+
             self.target.change_x *= 2
             self.arrow.change_y = 0
             self.arrow.center_y = 130
@@ -74,11 +117,11 @@ class MyGame(arcade.Window):
             font_name='Garamond',
             batch=self.batch
         )
-        if self.target.center_x <= 40 or self.target.center_x >= SCREEN_WIDTH - 40:
+        if self.target.center_x <= 30 or self.target.center_x >= SCREEN_WIDTH - 30:
             self.target.change_x *= -1
 
         self.arrow.update()
-        self.target.update()
+        self.target.update(delta_time, False)
 
         if self.arrow.center_y >= SCREEN_HEIGHT:
             self.arrow.change_y = 0
