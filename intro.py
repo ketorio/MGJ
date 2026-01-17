@@ -1,21 +1,20 @@
 import arcade
+from menu import Menu
 
 SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Mad girl journey"
 
-class TitleScreen(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
-        #self.texture = arcade.load_texture("images/1.jpg")
 
-    def setup(self):
+class TitleScreen(arcade.View):
+    def __init__(self):
+        super().__init__()
         self.x = 600
         self.y = 0
+        self.schedule = False
 
     def on_draw(self):
         self.clear()
-        #arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
         arcade.draw_text(
             "Mad",
             self.x - 200, self.y,
@@ -42,15 +41,13 @@ class TitleScreen(arcade.Window):
             font_name="castellar")
 
     def on_update(self, delta_time):
-        self.y += 5
-        if self.y >= 400:
-            self.y = 400
+        if not self.schedule:
+            self.y += 4
+        if self.y >= 360 and not self.schedule:
+            self.schedule = True
+            arcade.schedule(self.transition, 0.5)
 
-
-def main():
-    game = TitleScreen(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
-    arcade.run()
-
-if __name__ == "__main__":
-    main()
+    def transition(self, time):
+        menu_view = Menu()
+        self.window.show_view(menu_view)
+        arcade.unschedule(self.transition)

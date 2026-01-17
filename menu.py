@@ -3,13 +3,14 @@ import arcade
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Mad girl journey"
-color2 = arcade.color.BULGARIAN_ROSE
+color2 = arcade.color.ARSENIC
 color1 = arcade.color.BYZANTINE
 color3 = arcade.color.FLIRT
 
-class Menu(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+
+class Menu(arcade.View):
+    def __init__(self):
+        super().__init__()
         self.titles = ["settings", "play", "extras"]
         self.selected_index = 1
         self.texture = arcade.load_texture("images/menu.jpg")
@@ -17,20 +18,19 @@ class Menu(arcade.Window):
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.texture,
-                                arcade.rect.XYWH(SCREEN_WIDTH // 2,
-                                SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
+                                 arcade.rect.XYWH(SCREEN_WIDTH // 2,
+                                                  SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
         x = 250
         y = 70
 
         for i, name in enumerate(self.titles):
             is_selected = False
-            x2 = x + i * 300
+            x2 = x + i * 400
             if self.selected_index == i:
                 is_selected = True
 
             font_size = 40 if is_selected else 35
             color = color1 if is_selected else color2
-            #bold = is_selected
 
             arcade.draw_text(
                 name,
@@ -40,7 +40,6 @@ class Menu(arcade.Window):
                 anchor_x="center",
                 anchor_y="center",
                 font_name="Algerian",
-                #bold=bold
             )
 
             if is_selected:
@@ -51,7 +50,6 @@ class Menu(arcade.Window):
                     arcade.draw_circle_filled(
                         x2 - 140, y, 10, color3)
 
-
     def on_key_press(self, key, modifiers):
         if key == arcade.key.LEFT:
             if self.selected_index > 0:
@@ -60,12 +58,5 @@ class Menu(arcade.Window):
             if self.selected_index < len(self.titles) - 1:
                 self.selected_index += 1
         elif key == arcade.key.ENTER:
-            pass
-
-
-def main():
-    game = Menu(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.run()
-
-if __name__ == "__main__":
-    main()
+            if self.selected_index == 1:
+                pass
