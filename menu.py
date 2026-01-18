@@ -1,6 +1,6 @@
 import arcade
-global cur_volume
 
+global cur_volume
 
 cur_volume = 0.5
 
@@ -68,6 +68,14 @@ class Menu(arcade.View):
                 anchor_y="center",
                 font_name="Algerian",
             )
+            arcade.draw_text(
+                'Нажмите Enter, чтобы выбрать',
+                10,
+                10,
+                arcade.color.BLACK,
+                12,
+                font_name="Lucida Calligraphy"
+            )
 
             if is_selected:
                 if self.selected_index == 1:
@@ -88,6 +96,10 @@ class Menu(arcade.View):
             if self.selected_index == 0:
                 settings_view = Settings(self)
                 self.window.show_view(settings_view)
+            elif self.selected_index == 2:
+                extra_view = Extras()
+                self.window.show_view(extra_view)
+
 
 class VolumeSlider:
     def __init__(self, center_x, center_y, width=550, height=30, min_value=0, max_value=100):
@@ -129,7 +141,6 @@ class VolumeSlider:
                                  arcade.color.JAPANESE_INDIGO,
                                  3)  # BATTLESHIP_GREY
 
-
         arcade.draw_circle_filled(
             self.thumb_x, self.thumb_y,
             self.thumb_radius,
@@ -153,7 +164,7 @@ class Settings(arcade.View):
             center_y=SCREEN_HEIGHT // 2
         )
 
-        self.volume = int(cur_volume*100)
+        self.volume = int(cur_volume * 100)
         self.slider.set_value(self.volume)
 
     def on_draw(self):
@@ -210,3 +221,124 @@ class Settings(arcade.View):
             self.window.show_view(menu_view)
 
 
+class Extras(arcade.View):
+    def __init__(self):
+        super().__init__()
+        arcade.set_background_color(arcade.color.BLACK)
+        self.texture = arcade.load_texture("bg/black_fon.jpg")
+
+    def on_draw(self):
+        self.clear()
+        arcade.draw_texture_rect(self.texture,
+                                 arcade.rect.XYWH(SCREEN_WIDTH // 2,
+                                                  SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
+        arcade.draw_text(
+            'Mad girl journey',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.15,
+            arcade.color.WHITE,
+            48,
+            anchor_x="center",
+            font_name="Lucida Calligraphy"
+        )
+        arcade.draw_text(
+            '-------------------',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.28,
+            arcade.color.WHITE,
+            60,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            'CC BY',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.35,
+            arcade.color.WHITE,
+            20,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            'Разработчики: Ketori, Haru',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.53,
+            arcade.color.WHITE,
+            25,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Работа с python arcade: Ketori, Haru',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.76,
+            arcade.color.WHITE,
+            23,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Спрайты, фоны, UI: Ketori, Haru',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 1.95,
+            arcade.color.WHITE,
+            23,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Сделано с помощью',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2.4,
+            arcade.color.WHITE,
+            20,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Python',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2.75,
+            arcade.color.WHITE,
+            25,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Arcade версия 3.3.3',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 3.3,
+            arcade.color.WHITE,
+            25,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            '-------------------',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 4.5,
+            arcade.color.WHITE,
+            45,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Sweet baka❀ 2026',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 6.2,
+            arcade.color.WHITE,
+            30,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Нажмите Backspace, чтобы вернуться в меню',
+            10,
+            10,
+            arcade.color.WHITE,
+            12,
+            font_name="Lucida Calligraphy"
+        )
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.BACKSPACE:
+            menu_view = Menu()
+            self.window.show_view(menu_view)
