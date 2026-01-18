@@ -14,7 +14,7 @@ class FlappyBird(arcade.Window):
     def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         arcade.set_background_color(arcade.color.BLIZZARD_BLUE)
-        self.bird = Bird("sprites/bird_wings_down.png", BIRD_SCALE)
+        self.bird = Bird("sprites/bird_wings_up.png", BIRD_SCALE)
         self.spike = arcade.Sprite("sprites/spike.png")
         self.score = 0
         self.scroll_x = 0
@@ -94,9 +94,9 @@ class Bird(arcade.Sprite):
 
     def change_texture(self):
         if self.change_y > 0:
-            self.texture = self.wing_up_texture
-        else:
             self.texture = self.wing_down_texture
+        else:  
+            self.texture = self.wing_up_texture
 
 
 def main():
@@ -107,3 +107,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
