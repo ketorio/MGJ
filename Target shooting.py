@@ -59,13 +59,13 @@ class MyGame(arcade.Window):
         self.score = 0
         self.end = False
 
-        self.hero = arcade.Sprite('images/hero.png', 0.6)
+        self.hero = arcade.Sprite('sprites/hero.png', 0.6)
         self.hero.center_x = SCREEN_WIDTH // 2
         self.hero.center_y = 100
         self.hero_list = arcade.SpriteList()
         self.hero_list.append(self.hero)
 
-        self.arrow = arcade.Sprite('images/coin.png', 0.08)
+        self.arrow = arcade.Sprite('sprites/coin.png', 0.08)
         self.arrow.center_x = SCREEN_WIDTH // 2
         self.arrow.center_y = 130
         self.arrow.change_y = 0
