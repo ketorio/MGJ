@@ -4,9 +4,6 @@ from intro import TitleScreen
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Mad girl journey"
-color2 = arcade.color.BULGARIAN_ROSE
-color1 = arcade.color.BYZANTINE
-color3 = arcade.color.FLIRT
 
 
 def main():
