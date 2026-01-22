@@ -1,8 +1,5 @@
 import arcade
-
-global cur_volume
-
-cur_volume = 0.5
+from arcade.gui import UIManager, UIBoxLayout, UISlider, UIAnchorLayout, UILabel
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -13,34 +10,39 @@ DEFAULT_VOLUME = 50
 color2 = arcade.color.ARSENIC
 color1 = arcade.color.BYZANTINE
 color3 = arcade.color.FLIRT
-PLAYING = False
+
+current_volume = 0.5
+music_player = None
+music_playing = False
 
 
 class Menu(arcade.View):
     def __init__(self):
         super().__init__()
-        sound = arcade.load_sound("music/mainbg.m4a")
-        global PLAYING
-        if not PLAYING:
-            self.player = arcade.play_sound(
+        self.texture = arcade.load_texture("bg/menu.jpg")
+        self.titles = ["settings", "play", "extras"]
+        self.selected_index = 1
+        self._init_music()
+
+    def _init_music(self):
+        global music_player, music_playing, current_volume
+
+        if not music_playing:
+            sound = arcade.load_sound("music/mainbg.m4a")
+            music_player = arcade.play_sound(
                 sound,
-                volume=cur_volume,
+                volume=current_volume,
                 pan=-1.0,
                 loop=True,
                 speed=1.0,
             )
-            PLAYING = True
-        else:
-            self.player = None
-        self.last_volume = cur_volume
-        self.titles = ["settings", "play", "extras"]
-        self.selected_index = 1
-        self.texture = arcade.load_texture("bg/menu.jpg")
+            music_playing = True
 
     def update_volume(self, new_volume):
-        """Обновляет громкость текущего звука"""
-        if self.player:
-            self.player.volume = new_volume
+        global current_volume, music_player
+        current_volume = new_volume
+        if music_player:
+            music_player.volume = current_volume
 
     def on_draw(self):
         self.clear()
@@ -101,99 +103,45 @@ class Menu(arcade.View):
                 self.window.show_view(extra_view)
 
 
-class VolumeSlider:
-    def __init__(self, center_x, center_y, width=550, height=30, min_value=0, max_value=100):
-        self.center_x = center_x
-        self.center_y = center_y
-        self.width = width
-        self.height = height
-        self.min_value = min_value
-        self.max_value = max_value
-        self.value = DEFAULT_VOLUME
-
-        self.left = center_x - width // 2
-        self.right = center_x + width // 2
-        self.top = center_y + height // 2
-        self.bottom = center_y - height // 2
-
-        self.thumb_radius = 20
-        self.thumb_x = self.value_to_x(self.value)
-        self.thumb_y = center_y
-
-        self.track_color = arcade.color.GRAY
-        self.fill_color = arcade.color.GREEN
-        self.thumb_color = arcade.color.ASH_GREY  # COOL_GREY
-        self.thumb_border_color = arcade.color.JAPANESE_INDIGO
-
-    def value_to_x(self, value):
-        normalized = (value - self.min_value) / (self.max_value - self.min_value)
-        return self.left + normalized * self.width
-
-    def set_value(self, value):
-        self.value = max(self.min_value, min(self.max_value, value))
-        self.thumb_x = self.value_to_x(self.value)
-        return self.value
-
-    def draw(self):
-        arcade.draw_rect_outline(arcade.XYWH(SCREEN_WIDTH // 2,
-                                             SCREEN_HEIGHT // 2,
-                                             550, 11),
-                                 arcade.color.JAPANESE_INDIGO,
-                                 3)  # BATTLESHIP_GREY
-
-        arcade.draw_circle_filled(
-            self.thumb_x, self.thumb_y,
-            self.thumb_radius,
-            self.thumb_color
-        )
-        arcade.draw_circle_outline(
-            self.thumb_x, self.thumb_y,
-            self.thumb_radius,
-            self.thumb_border_color,
-            2.5
-        )
-
-
 class Settings(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
-        self.m = menu_view
+        self.menu_view = menu_view
         self.texture = arcade.load_texture("bg/setting.png")
-        self.slider = VolumeSlider(
-            center_x=SCREEN_WIDTH // 2,
-            center_y=SCREEN_HEIGHT // 2
-        )
 
-        self.volume = int(cur_volume * 100)
-        self.slider.set_value(self.volume)
+        self.manager = UIManager()
+        self.manager.enable()
+        self.anchor_layout = UIAnchorLayout()
+        self.box_layout = UIBoxLayout(vertical=True, space_between=5)
+        self.setup_widgets()
+
+        self.anchor_layout.add(self.box_layout)
+        self.manager.add(self.anchor_layout)
+
+    def setup_widgets(self):
+        self.slider = UISlider(width=550, height=40, min_value=VOLUME_MIN, max_value=VOLUME_MAX,
+                               value=int(current_volume * 100))
+        self.box_layout.add(self.slider)
+
 
     def on_draw(self):
         self.clear()
-
         arcade.draw_texture_rect(self.texture,
                                  arcade.rect.XYWH(SCREEN_WIDTH // 2,
                                                   SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.slider.draw()
-        volume_x = SCREEN_WIDTH // 2
-        volume_y = SCREEN_HEIGHT // 2 - 100
 
+
+        self.manager.draw()
+        x = int(current_volume * 100)
         arcade.draw_text(
-            str(self.volume),
-            volume_x,
-            volume_y + 10,
-            arcade.color.JAPANESE_INDIGO,
-            36,
+            f"Volume: {x}%",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2 - 48,
+            arcade.color.WHITE,
+            22,
             anchor_x="center",
-            bold=True
-        )
-
-        arcade.draw_text(
-            "%",
-            volume_x + 35,
-            volume_y,
-            arcade.color.JAPANESE_INDIGO,
-            20,
-            anchor_x="center"
+            anchor_y="center",
+            font_name="Lucida Calligraphy"
         )
         arcade.draw_text(
             'Нажмите Backspace, чтобы вернуться в меню',
@@ -204,27 +152,31 @@ class Settings(arcade.View):
             font_name="Lucida Calligraphy"
         )
 
+    def on_update(self, delta_time: float):
+        global current_volume
+        current_vol = self.slider.value / 100.0
+        current_volume = current_vol
+        self.menu_view.update_volume(current_volume)
+
     def on_key_press(self, key, modifiers):
-        global cur_volume
-        if key == arcade.key.UP:
-            self.volume = self.slider.set_value(self.volume + 5)
-            cur_volume = self.volume / 100.0
-            self.m.update_volume(cur_volume)
-
-        elif key == arcade.key.DOWN:
-            self.volume = self.slider.set_value(self.volume - 5)
-            cur_volume = self.volume / 100.0
-            self.m.update_volume(cur_volume)
-
-        elif key == arcade.key.BACKSPACE:
+        global current_volume
+        if key == arcade.key.BACKSPACE:
             menu_view = Menu()
             self.window.show_view(menu_view)
+        elif key == arcade.key.UP:
+            x = min(self.slider.value + 5, VOLUME_MAX)
+            self.slider.value = x
+            self.menu_view.update_volume(self.slider.value / 100.0)
+        elif key == arcade.key.DOWN:
+            x = max(self.slider.value - 5, VOLUME_MIN)
+            self.slider.value = x
+            self.menu_view.update_volume(self.slider.value / 100.0)
 
 
 class Extras(arcade.View):
-    def __init__(self):
+    def __init__(self, menu_view=None):
         super().__init__()
-        arcade.set_background_color(arcade.color.BLACK)
+        self.menu_view = menu_view
         self.texture = arcade.load_texture("bg/black_fon.jpg")
 
     def on_draw(self):
@@ -304,6 +256,7 @@ class Extras(arcade.View):
         )
         arcade.draw_text(
             'Arcade версия 3.3.3',
+
             SCREEN_WIDTH // 2,
             SCREEN_HEIGHT // 3.3,
             arcade.color.WHITE,
@@ -313,6 +266,7 @@ class Extras(arcade.View):
         )
         arcade.draw_text(
             '-------------------',
+
             SCREEN_WIDTH // 2,
             SCREEN_HEIGHT // 4.5,
             arcade.color.WHITE,
@@ -340,5 +294,8 @@ class Extras(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.BACKSPACE:
-            menu_view = Menu()
-            self.window.show_view(menu_view)
+            if self.menu_view:
+                self.window.show_view(self.menu_view)
+            else:
+                menu_view = Menu()
+                self.window.show_view(menu_view)
