@@ -12,7 +12,7 @@ class Target(arcade.Sprite):
         super().__init__()
         self.textures = []
         for i in range(1, 6):
-            texture = arcade.load_texture(f"images/target{i}.png")
+            texture = arcade.load_texture(f"sprites/target{i}.png")
             self.textures.append(texture)
         self.textures_flipped = [texture.flip_horizontally() for texture in self.textures]
 
