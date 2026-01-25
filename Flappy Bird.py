@@ -70,6 +70,8 @@ class FlappyBird(arcade.Window):
         self.bird.change_texture()
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
         if key == arcade.key.UP:
             self.bird.change_y = 4
         if key == arcade.key.R and self.game_over:

@@ -67,7 +67,7 @@ class MyGame(arcade.Window):
 
         self.arrow = arcade.Sprite('sprites/coin.png', 0.08)
         self.arrow.center_x = SCREEN_WIDTH // 2
-        self.arrow.center_y = 130
+        self.arrow.center_y = 100
         self.arrow.change_y = 0
         self.arrow_list = arcade.SpriteList()
         self.arrow_list.append(self.arrow)
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
 
             self.target.change_x *= 2
             self.arrow.change_y = 0
-            self.arrow.center_y = 130
+            self.arrow.center_y = 100
 
         self.text = arcade.Text(
             f"score: {self.score}",
@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
 
         if self.arrow.center_y >= SCREEN_HEIGHT:
             self.arrow.change_y = 0
-            self.arrow.center_y = 130
+            self.arrow.center_y = 100
 
     def on_key_press(self, key, modifiers):
         if self.end:
@@ -134,6 +134,8 @@ class MyGame(arcade.Window):
             return
         if key == arcade.key.UP:
             self.arrow.change_y = 9
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
 
 
 def main():

@@ -88,6 +88,8 @@ class Menu(arcade.View):
                         x2 - 140, y, 10, color3)
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
         if key == arcade.key.LEFT:
             if self.selected_index > 0:
                 self.selected_index -= 1
@@ -123,13 +125,11 @@ class Settings(arcade.View):
                                value=int(current_volume * 100))
         self.box_layout.add(self.slider)
 
-
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.texture,
                                  arcade.rect.XYWH(SCREEN_WIDTH // 2,
                                                   SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT))
-
 
         self.manager.draw()
         x = int(current_volume * 100)
@@ -159,6 +159,8 @@ class Settings(arcade.View):
         self.menu_view.update_volume(current_volume)
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
         global current_volume
         if key == arcade.key.BACKSPACE:
             menu_view = Menu()
@@ -293,6 +295,8 @@ class Extras(arcade.View):
         )
 
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
         if key == arcade.key.BACKSPACE:
             if self.menu_view:
                 self.window.show_view(self.menu_view)
