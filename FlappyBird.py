@@ -1,19 +1,20 @@
 import arcade
 import random
 
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Flappy Bird"
 BIRD_SCALE = 0.3
-SPIKE_SCALE = 0.8
+SPIKE_SCALE = 0.9
 SPIKE_GAP = 300
 SCROLL_SPEED = 4
 
 
-class FlappyBird(arcade.Window):
-    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+class FlappyBird(arcade.View):
+    def __init__(self):
+        super().__init__()
         arcade.set_background_color(arcade.color.BLIZZARD_BLUE)
+        self.timer = 20.0
         self.bird = Bird("sprites/bird_wings_up.png", BIRD_SCALE)
         self.spike = arcade.Sprite("sprites/spike.png")
         self.score = 0
@@ -32,31 +33,32 @@ class FlappyBird(arcade.Window):
         self.score = 0
         self.game_over = False
 
-        for _ in range(2):
+        for _ in range(3):
             self.generate_SPIKE_top()
             self.generate_SPIKE_bottom()
 
-    def generate_SPIKE_bottom(self):
+    def generate_SPIKE_top(self):
         spike = arcade.Sprite("sprites/spike.png", SPIKE_SCALE, angle=180)
-        spike.center_x = SCREEN_WIDTH + random.randint(50, 300)
-        spike.center_y = random.randint(500, 800)
+        spike.center_x = SCREEN_WIDTH + random.randint(50, 500)
+        spike.center_y = random.randint(620, 770)
         self.spikes.append(spike)
 
-    def generate_SPIKE_top(self):
+    def generate_SPIKE_bottom(self):
         spike = arcade.Sprite("sprites/spike.png", SPIKE_SCALE)
-        spike.center_x = SCREEN_WIDTH + random.randint(50, 300)
-        spike.center_y = random.randint(-200, 100)
+        spike.center_x = SCREEN_WIDTH + random.randint(50, 500)
+        spike.center_y = random.randint(-40, 102)
         self.spikes.append(spike)
 
     def on_update(self, delta_time):
-        if not self.game_over:
+        if not self.game_over and self.timer > 0:
+            self.timer -= delta_time
             self.bird.change_y -= 0.2
             self.bird.center_y += self.bird.change_y
 
             for spike in self.spikes:
                 spike.center_x -= SCROLL_SPEED
 
-                if spike.center_x < -50:
+                if spike.center_x < 0:
                     spike.remove_from_sprite_lists()
                     self.generate_SPIKE_bottom()
                     self.generate_SPIKE_top()
@@ -97,16 +99,17 @@ class Bird(arcade.Sprite):
     def change_texture(self):
         if self.change_y > 0:
             self.texture = self.wing_down_texture
-        else:  
+        else:
             self.texture = self.wing_up_texture
 
 
 def main():
-    game = FlappyBird(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    view = FlappyBird()
+    view.setup()
+    window.show_view(view)
     arcade.run()
 
 
 if __name__ == "__main__":
     main()
-

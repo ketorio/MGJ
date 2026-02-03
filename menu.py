@@ -206,7 +206,7 @@ class Extras(arcade.View):
         arcade.draw_text(
             'CC BY',
             SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 1.35,
+            SCREEN_HEIGHT // 1.33,
             arcade.color.WHITE,
             20,
             anchor_x="center",
@@ -214,7 +214,7 @@ class Extras(arcade.View):
         arcade.draw_text(
             'Разработчики: Ketori, Haru',
             SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 1.53,
+            SCREEN_HEIGHT // 1.45,
             arcade.color.WHITE,
             25,
             anchor_x="center",
@@ -223,7 +223,7 @@ class Extras(arcade.View):
         arcade.draw_text(
             'Работа с python arcade: Ketori, Haru',
             SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 1.76,
+            SCREEN_HEIGHT // 1.62,
             arcade.color.WHITE,
             23,
             anchor_x="center",
@@ -232,7 +232,16 @@ class Extras(arcade.View):
         arcade.draw_text(
             'Спрайты, фоны, UI: Ketori, Haru',
             SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 1.95,
+            SCREEN_HEIGHT // 1.82,
+            arcade.color.WHITE,
+            23,
+            anchor_x="center",
+            font_name="Tw Cen Mt"
+        )
+        arcade.draw_text(
+            'Музыка: inabakumori remix GearRabbit/Chiptune',
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2.08,
             arcade.color.WHITE,
             23,
             anchor_x="center",

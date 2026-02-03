@@ -1,8 +1,8 @@
 import arcade
 from pyglet.graphics import Batch
 
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Target shooting"
 ANIMATION_SPEED = 0.1
 
@@ -19,7 +19,7 @@ class Target(arcade.Sprite):
         self.texture = self.textures[0]
         self.center_x = x
         self.center_y = y
-        self.scale = 0.3
+        self.scale = 0.38
 
         self.animation_frame = 0
         self.animation_timer = 0
@@ -49,9 +49,9 @@ class Target(arcade.Sprite):
         self.center_x += self.change_x
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class TargetShooting(arcade.View):
+    def __init__(self):
+        super().__init__()
         arcade.set_background_color(arcade.color.ASH_GREY)
         self.batch = Batch()
 
@@ -59,13 +59,13 @@ class MyGame(arcade.Window):
         self.score = 0
         self.end = False
 
-        self.hero = arcade.Sprite('sprites/hero.png', 0.6)
+        self.hero = arcade.Sprite('sprites/pew.png', 0.8)
         self.hero.center_x = SCREEN_WIDTH // 2
         self.hero.center_y = 100
         self.hero_list = arcade.SpriteList()
         self.hero_list.append(self.hero)
 
-        self.arrow = arcade.Sprite('sprites/coin.png', 0.08)
+        self.arrow = arcade.Sprite('sprites/coin.png', 0.09)
         self.arrow.center_x = SCREEN_WIDTH // 2
         self.arrow.center_y = 100
         self.arrow.change_y = 0
@@ -132,15 +132,19 @@ class MyGame(arcade.Window):
             if key == arcade.key.ENTER:
                 self.setup()
             return
+        if key == arcade.key.ESCAPE:
+            arcade.close_window()
         if key == arcade.key.UP:
-            self.arrow.change_y = 9
+            self.arrow.change_y = 11
         if key == arcade.key.ESCAPE:
             arcade.close_window()
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    view = TargetShooting()
+    view.setup()
+    window.show_view(view)
     arcade.run()
 
 

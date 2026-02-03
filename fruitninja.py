@@ -2,24 +2,24 @@ import random
 import arcade
 from pyglet.graphics import Batch
 
-SCREEN_WIDTH = 900
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = ""
 DASH_TIME = 0.3
-FRUIT_SCALE = 0.5
+FRUIT_SCALE = 0.6
 FALL_SPEED = -4
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class Fruitninja(arcade.View):
+    def __init__(self):
+        super().__init__()
         arcade.set_background_color(arcade.color.BUFF)
-        self.pomo = Frupomo("sprites/frupomo.png", 0.7)
+        self.pomo = Frupomo("sprites/frupomo.png", 0.81)
         self.batch = Batch()
 
     def setup(self):
         self.pomo.center_x = SCREEN_WIDTH // 2
-        self.pomo.center_y = SCREEN_HEIGHT // 6
+        self.pomo.center_y = SCREEN_HEIGHT // 7
         self.timer = 0
         self.is_dashing = False
         self.pomo_list = arcade.SpriteList()
@@ -34,10 +34,10 @@ class MyGame(arcade.Window):
     def generate_fruit(self, time):
         fruit1 = arcade.Sprite("sprites/fruit1.png", FRUIT_SCALE)
         fruit2 = arcade.Sprite("sprites/fruit2.png", FRUIT_SCALE)
-        fruit1.center_x = random.randint(130, SCREEN_WIDTH - 130)
+        fruit1.center_x = random.randint(250, SCREEN_WIDTH - 250)
         fruit1.center_y = random.randint(SCREEN_HEIGHT + 300, SCREEN_HEIGHT + 400)
         fruit1.name = 'fr1'
-        fruit2.center_x = random.randint(130, SCREEN_WIDTH - 130)
+        fruit2.center_x = random.randint(250, SCREEN_WIDTH - 250)
         fruit2.center_y = random.randint(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 300)
         fruit2.name = 'fr2'
         self.fruit_list.append(fruit1)
@@ -100,7 +100,7 @@ class MyGame(arcade.Window):
                     if self.pomo.change_x < 0:
                         self.pomo.pomo_flipped()
         self.text = arcade.Text(
-            f"score: {self.score}",
+            f"misses: {self.score}",
             10, SCREEN_HEIGHT - 50,
             color=arcade.color.BLACK,
             font_size=24,
@@ -112,12 +112,12 @@ class MyGame(arcade.Window):
         if key == arcade.key.RIGHT:
             self.is_dashing = True
             self.timer = DASH_TIME
-            self.pomo.change_x = 10
+            self.pomo.change_x = 15
             self.pomo.pomodash()
         if key == arcade.key.LEFT:
             self.is_dashing = True
             self.timer = DASH_TIME
-            self.pomo.change_x = -10
+            self.pomo.change_x = -15
             self.pomo.pomodash_flipped()
         if key == arcade.key.ESCAPE:
             arcade.close_window()
@@ -146,8 +146,10 @@ class Frupomo(arcade.Sprite):
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    view = Fruitninja()
+    view.setup()
+    window.show_view(view)
     arcade.run()
 
 
